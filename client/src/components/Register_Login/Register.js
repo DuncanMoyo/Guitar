@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import Formfield from "../utils/Form/Formfield";
 import { update, generateData, isFormValid } from "../utils/Form/FormActions";
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/User_actions";
+import { registerUser } from "../../actions/User_actions";
+
+import Dialog from '@material-ui/core/Dialog'
+
 
 class Register extends Component {
   state = {
     formError: false,
-    formSuccess: "",
+    formSuccess: false,
     formData: {
       name: {
         element: "input",
@@ -103,17 +106,28 @@ class Register extends Component {
     let formIsValid = isFormValid(this.state.formData, "register");
 
     if (formIsValid) {
-      console.log(dataToSubmit);
-      // this.props.dispatch(loginUser(dataToSubmit)).then(response => {
-      //   if(response.payload.loginSuccess){
-      //     console.log(response.payload);
-      //     this.props.history.push('/user/dashboard')
-      //   } else {
-      //     this.setState({
-      //       formError: true
-      //     })
-      //   }
-      // })
+      // console.log(dataToSubmit);
+      this.props
+        .dispatch(registerUser(dataToSubmit))
+        .then((response) => {
+          if (response.payload.success) {
+            // console.log(response.payload);
+            this.setState({
+              formSuccess: true,
+              formError: false,
+            });
+            setTimeout(() => {
+              this.props.history.push("/register_login");
+            }, 3000);
+          } else {
+            this.setState({
+              formError: true,
+            });
+          }
+        })
+        .catch((error) => {
+          this.setState({ formError: true });
+        });
     } else {
       this.setState({
         formError: true,
@@ -181,6 +195,14 @@ class Register extends Component {
             </div>
           </div>
         </div>
+        <Dialog open={this.state.formSuccess}>
+          <div className="dialog_alert">
+            <div>Congratulations !!</div>
+            <div>
+              You will be redirected to the LOGIN after a couple of seconds...
+            </div>
+          </div>
+        </Dialog>
       </div>
     );
   }
