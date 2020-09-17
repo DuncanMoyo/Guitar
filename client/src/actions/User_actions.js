@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { USER_SERVER } from "../components/utils/Misc";
-import { LOGIN_USER, REGISTER_USER} from "./Types";
+import { LOGIN_USER, REGISTER_USER, AUTH_USER } from "./Types";
 
 export function loginUser(dataToSubmit) {
   const request = axios
@@ -19,6 +19,17 @@ export function registerUser(dataToSubmit) {
     .then((response) => response.data);
   return {
     type: REGISTER_USER,
-    payload: request
-  }
+    payload: request,
+  };
+}
+
+export function auth() {
+  const request = axios
+    .get(`${USER_SERVER}/auth`)
+    .then((response) => response.data);
+
+  return {
+    type: AUTH_USER,
+    payload: request,
+  };
 }
