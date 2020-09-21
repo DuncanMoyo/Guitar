@@ -5,11 +5,8 @@ const CardBlock = (props) => {
 
   const renderCards = () => (
     props.list ? props.list.map((card, i) => (
-          <div>
-            <Card key={i} {...card} />
-          </div>
-        ))
-      : null
+      <Card key={i} {...card} />     
+    )): null
   )
     
 
