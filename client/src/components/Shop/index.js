@@ -3,12 +3,17 @@ import {connect} from 'react-redux'
 import PageTop from '../utils/PageTop'
 
 import {getBrands, getWoods} from '../../actions/Product_actions'
+import CollapseCheckBox from '../utils/CollapseCheckBox'
 
 class Shop extends Component {
 
   componentDidMount(){
     this.props.dispatch(getBrands())
     this.props.dispatch(getWoods())
+  }
+
+  handleFilters = () => {
+    
   }
 
   render() {
@@ -21,7 +26,12 @@ class Shop extends Component {
         <div className='container'>
           <div className='shop_wrapper'>
             <div className='left'>
-              left
+              <CollapseCheckBox 
+                initState={true}
+                title='Brands'
+                list={products.brands}
+                handleFilters={filters => this.handleFilters(filters, 'brand')}
+              />
             </div>
             <div className='right'>
               right
