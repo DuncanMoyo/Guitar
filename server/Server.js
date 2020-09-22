@@ -28,6 +28,39 @@ const { admin } = require("./Middleware/Admin");
 //         PRODUCTS
 //==========================
 
+app.post("/api/product/shop", (req, res) => {
+  let order = req.body.order ? req.body.order : "desc";
+  let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
+  let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+  let skip = parseInt(req.body.skip);
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      if (key === "price") {
+        findArgs[key] = {
+          $gte: req.body.filters[key][0],
+          $lte: req.body.filters[key][1],
+        };
+      } else {
+        findArgs[key] === req.body.filters[key];
+      }
+    }
+  }
+  // console.log(findArgs);
+  // res.status(200)
+
+  Product.find(findArgs)
+    .populate("brand")
+    .populate("wood")
+    .sort([[sortBy, order]])
+    .skip(skip)
+    .limit(limit)
+    .exec(() => {
+      
+    })
+});
+
 // By arrival
 // /articles?sortBy=createdAt&order=desc&limit=4
 
@@ -45,7 +78,7 @@ app.get("/api/product/articles", (req, res) => {
     .sort([[sortBy, order]])
     .limit(limit)
     .exec((err, articles) => {
-      if(err) return res.status(400).send(err);
+      if (err) return res.status(400).send(err);
       res.send(articles);
     });
 });
