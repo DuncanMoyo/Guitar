@@ -5,7 +5,8 @@ import PageTop from "../utils/PageTop";
 import { getBrands, getWoods } from "../../actions/Product_actions";
 import CollapseCheckBox from "../utils/CollapseCheckBox";
 
-import {frets} from '../utils/Form/FixedCategories'
+import {frets, price} from '../utils/Form/FixedCategories'
+import CollapseRadio from "../utils/CollapseRadio";
 
 class Shop extends Component {
 
@@ -26,10 +27,27 @@ class Shop extends Component {
     this.props.dispatch(getWoods());
   }
 
+  handlePrice = (value) => {
+    const data = price
+    let array = []
+    for(let key in data){
+      if(data[key]._id === parseInt(value, 10)){
+        array = data[key].array
+      }
+    }
+    return array
+  }
+
   handleFilters = (filters, category) => {
     // console.log(filters);
     const newFilters = {...this.state.filters}
     newFilters[category] = filters
+
+    if(category === 'price'){
+      let priceValues = this.handlePrice(filters)
+      newFilters[category] = priceValues
+    }
+
     this.setState({
       filters: newFilters
     })
@@ -61,11 +79,19 @@ class Shop extends Component {
                 }
               />
               <CollapseCheckBox
-                initState={true}
+                initState={false}
                 title="Wood"
                 list={products.woods}
                 handleFilters={(filters) =>
                   this.handleFilters(filters, "wood")
+                }
+              />
+              <CollapseRadio
+                initState={true}
+                title="Price"
+                list={price}
+                handleFilters={(filters) =>
+                  this.handleFilters(filters, "price")
                 }
               />
             </div>
