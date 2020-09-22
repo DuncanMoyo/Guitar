@@ -1,52 +1,86 @@
-import React, { Component } from 'react'
-import {connect} from 'react-redux'
-import PageTop from '../utils/PageTop'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PageTop from "../utils/PageTop";
 
-import {getBrands, getWoods} from '../../actions/Product_actions'
-import CollapseCheckBox from '../utils/CollapseCheckBox'
+import { getBrands, getWoods } from "../../actions/Product_actions";
+import CollapseCheckBox from "../utils/CollapseCheckBox";
+
+import {frets} from '../utils/Form/FixedCategories'
 
 class Shop extends Component {
 
-  componentDidMount(){
-    this.props.dispatch(getBrands())
-    this.props.dispatch(getWoods())
+  state = {
+    grid: '',
+    limit: 6,
+    skip: 0,
+    filters: {
+      brand: [],
+      frets: [],
+      wood: [],
+      price: []
+    }
   }
 
-  handleFilters = () => {
-    
+  componentDidMount() {
+    this.props.dispatch(getBrands());
+    this.props.dispatch(getWoods());
   }
+
+  handleFilters = (filters, category) => {
+    // console.log(filters);
+    const newFilters = {...this.state.filters}
+    newFilters[category] = filters
+    this.setState({
+      filters: newFilters
+    })
+  };
 
   render() {
-    const products = this.props.products
+    console.log(this.state.filters);
+    const products = this.props.products;
     return (
       <div>
-        <PageTop 
-          title='Browse Products'
-        />
-        <div className='container'>
-          <div className='shop_wrapper'>
-            <div className='left'>
-              <CollapseCheckBox 
+        <PageTop title="Browse Products" />
+        <div className="container">
+          <div className="shop_wrapper">
+            <div className="left">
+              <CollapseCheckBox
                 initState={true}
-                title='Brands'
+                title="Brands"
                 list={products.brands}
-                handleFilters={filters => this.handleFilters(filters, 'brand')}
+                handleFilters={(filters) =>
+                  this.handleFilters(filters, "brand")
+                }
+              />
+                <CollapseCheckBox
+                initState={false}
+                title="Frets"
+                list={frets}
+                handleFilters={(filters) =>
+                  this.handleFilters(filters, "frets")
+                }
+              />
+              <CollapseCheckBox
+                initState={true}
+                title="Wood"
+                list={products.woods}
+                handleFilters={(filters) =>
+                  this.handleFilters(filters, "wood")
+                }
               />
             </div>
-            <div className='right'>
-              right
-            </div>
+            <div className="right">right</div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    products: state.products
-  }
-}
+    products: state.products,
+  };
+};
 
-export default connect(mapStateToProps)(Shop)
+export default connect(mapStateToProps)(Shop);
