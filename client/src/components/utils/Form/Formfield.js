@@ -1,19 +1,16 @@
 import React from "react";
 
 const Formfield = ({ formData, change, id }) => {
-  
   const showError = () => {
-    let errorMessage = null
-    if(formData.validation && !formData.valid) {
+    let errorMessage = null;
+    if (formData.validation && !formData.valid) {
       errorMessage = (
-        <div className='error_label'>
-          {formData.validationMessage}
-        </div>
-      )
+        <div className="error_label">{formData.validationMessage}</div>
+      );
     }
-    return errorMessage
-  }
-  
+    return errorMessage;
+  };
+
   const renderTemplate = () => {
     let formTemplate = null;
 
@@ -21,6 +18,10 @@ const Formfield = ({ formData, change, id }) => {
       case "input":
         formTemplate = (
           <div className="formBlock">
+            {formData.showLabel ? (
+              <div className="label_inputs">{formData.config.label}</div>
+            ) : null}
+
             <input
               {...formData.config}
               value={formData.value}
