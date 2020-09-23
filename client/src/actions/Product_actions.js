@@ -51,25 +51,25 @@ export function getProductsToShop(
   filters = [],
   previousState = []
 ) {
-  const data = {
-    limit,
-    skip,
-    filters,
-  };
+    const data = {
+      limit,
+      skip,
+      filters,
+    };
 
-  const request = axios
-    .post(`${PRODUCT_SERVER}/shop`, data)
-    .then((response) => {
-      return {
-        size: response.data.size,
-        articles: response.data.articles,
-      };
-    });
-  return {
-    type: GET_PRODUCTS_TO_SHOP,
-    payload: request
+    const request = axios
+      .post(`${PRODUCT_SERVER}/shop`, data)
+      .then((response) => {
+        return {
+          size: response.data.size,
+          articles: response.data.articles,
+        };
+      });
+    return {
+      type: GET_PRODUCTS_TO_SHOP,
+      payload: request
+    }
   }
-}
 
 export function getWoods() {
   const request = axios

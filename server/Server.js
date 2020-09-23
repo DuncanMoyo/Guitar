@@ -33,8 +33,8 @@ app.post("/api/product/shop", (req, res) => {
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
-  let findArgs = {};
 
+  let findArgs = {};
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
       if (key === "price") {
@@ -43,7 +43,7 @@ app.post("/api/product/shop", (req, res) => {
           $lte: req.body.filters[key][1],
         };
       } else {
-        findArgs[key] === req.body.filters[key];
+        findArgs[key] = req.body.filters[key];
       }
     }
   }
