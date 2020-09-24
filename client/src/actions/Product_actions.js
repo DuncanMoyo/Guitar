@@ -5,6 +5,8 @@ import {
   GET_BRANDS,
   GET_WOODS,
   GET_PRODUCTS_TO_SHOP,
+  ADD_PRODUCT,
+  CLEAR_PRODUCT
 } from "./Types";
 import { PRODUCT_SERVER } from "../components/utils/Misc";
 
@@ -30,6 +32,23 @@ export function getProductsByArrival() {
   };
 }
 
+export function addProduct(dataToSubmit) {
+  const request = axios
+    .post(`${PRODUCT_SERVER}/article`, dataToSubmit)
+    .then((response) => response.data);
+  return {
+    type: ADD_PRODUCT,
+    payload: request,
+  };
+}
+
+export function clearProduct(){
+  return {
+    type: CLEAR_PRODUCT,
+    payload: ''
+  }
+}
+
 /////////////////////////////////////////
 ///////////     CATEGORIES      /////////
 /////////////////////////////////////////
@@ -51,31 +70,27 @@ export function getProductsToShop(
   filters = [],
   previousState = []
 ) {
-    const data = {
-      limit,
-      skip,
-      filters,
-    };
+  const data = {
+    limit,
+    skip,
+    filters,
+  };
 
-    const request = axios
-      .post(`${PRODUCT_SERVER}/shop`, data)
-      .then((response) => {
+  const request = axios
+    .post(`${PRODUCT_SERVER}/shop`, data)
+    .then((response) => {
+      let newState = [...previousState, ...response.data.articles];
 
-        let newState = [
-          ...previousState,
-          ...response.data.articles
-        ]
-
-        return {
-          size: response.data.size,
-          articles: response.data.articles,
-        };
-      });
-    return {
-      type: GET_PRODUCTS_TO_SHOP,
-      payload: request
-    }
-  }
+      return {
+        size: response.data.size,
+        articles: response.data.articles,
+      };
+    });
+  return {
+    type: GET_PRODUCTS_TO_SHOP,
+    payload: request,
+  };
+}
 
 export function getWoods() {
   const request = axios
@@ -86,5 +101,4 @@ export function getWoods() {
     type: GET_WOODS,
     payload: request,
   };
-
 }

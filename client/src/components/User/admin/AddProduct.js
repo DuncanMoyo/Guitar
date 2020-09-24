@@ -6,11 +6,17 @@ import {
   update,
   generateData,
   isFormValid,
-  populateOptionFields
+  populateOptionFields,
+  resetFields
 } from "../../utils/Form/FormActions";
 
 import { connect } from "react-redux";
-import { getBrands, getWoods } from "../../../actions/Product_actions";
+import {
+  getBrands,
+  getWoods,
+  addProduct,
+  clearProduct
+} from "../../../actions/Product_actions";
 
 class AddProduct extends Component {
   state = {
@@ -24,7 +30,7 @@ class AddProduct extends Component {
           label: "Product Name",
           name: "name_input",
           type: "text",
-          placeholder: "Enter your name",
+          placeholder: "Enter Guitar Name",
         },
         validation: {
           required: true,
@@ -183,27 +189,80 @@ class AddProduct extends Component {
 
   updateFields = (newFormData) => {
     this.setState({
-      formData: newFormData
-    })
+      formData: newFormData,
+    });
+  };
+
+  componentDidMount() {
+    const formdata = this.state.formData;
+
+    this.props.dispatch(getBrands()).then((response) => {
+      // console.log(this.props.products.brands);
+      const newFormData = populateOptionFields(
+        formdata,
+        this.props.products.brands,
+        "brand"
+      );
+      // console.log(newFormData);
+      this.updateFields(newFormData);
+    });
+
+    this.props.dispatch(getWoods()).then((response) => {
+      // console.log(this.props.products.brands);
+      const newFormData = populateOptionFields(
+        formdata,
+        this.props.products.woods,
+        "wood"
+      );
+      // console.log(newFormData);
+      this.updateFields(newFormData);
+    });
   }
 
-  componentDidMount(){
-    const formdata = this.state.formData
+  updateForm = (element) => {
+    const newFormData = update(element, this.state.formData, "products");
+    this.setState({
+      formError: false,
+      formData: newFormData,
+    });
+  };
 
-    this.props.dispatch(getBrands()).then(response => {
-      // console.log(this.props.products.brands);
-      const newFormData = populateOptionFields(formdata, this.props.products.brands, 'brand')
-      // console.log(newFormData);
-      this.updateFields(newFormData)
-    })
+  resetFieldHandler = () => {
+    const newFormData = resetFields(this.state.formData, 'products')
 
-    this.props.dispatch(getWoods()).then(response => {
-      // console.log(this.props.products.brands);
-      const newFormData = populateOptionFields(formdata, this.props.products.woods, 'wood')
-      // console.log(newFormData);
-      this.updateFields(newFormData)
+    this.setState({
+      formData: newFormData,
+      formSuccess: true,
     })
-  }
+    setTimeout(() => {
+      this.setState({
+        formSuccess: false
+      }, () => {
+        this.props.dispatch(clearProduct())
+      })
+    }, 3000)
+  };
+
+  submitForm = (event) => {
+    event.preventDefault();
+    let dataToSubmit = generateData(this.state.formData, "products");
+    let formIsValid = isFormValid(this.state.formData, "products");
+
+    if (formIsValid) {
+      // console.log(dataToSubmit);
+      this.props.dispatch(addProduct(dataToSubmit)).then(() => {
+        if (this.props.products.addProduct.success) {
+          this.resetFieldHandler();
+        } else {
+          this.setState({ formError: true });
+        }
+      });
+    } else {
+      this.setState({
+        formError: true,
+      });
+    }
+  };
 
   render() {
     return (
@@ -261,9 +320,9 @@ class AddProduct extends Component {
               formData={this.state.formData.publish}
               change={(element) => this.updateForm(element)}
             />
-            {this.state.formSuccess ? 
-            <div className='form_success'>Success!!!</div>
-            :null}
+            {this.state.formSuccess ? (
+              <div className="form_success">Success!!!</div>
+            ) : null}
 
             {this.state.formError ? (
               <div className="error_label">Please check your data</div>
