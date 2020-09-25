@@ -15,7 +15,25 @@ class FileUpload extends Component {
     };
   }
 
-  showUploadedImages = () => {};
+  onRemove = (id) => {
+    
+  };
+
+  showUploadedImages = () =>
+    this.state.uploadedFiles.map((item) => (
+      <div
+        className="dropzone_box"
+        onClick={() => this.onRemove(item.public_id)}
+        key={item.public_id}
+      >
+        <div
+          className="wrap"
+          style={{
+            background: `url(${item.url}) no-repeat`,
+          }}
+        ></div>
+      </div>
+    ));
 
   onDrop = (files) => {
     // console.log(files);
@@ -29,7 +47,9 @@ class FileUpload extends Component {
 
     formData.append("file", files[0]);
 
-    axios.post("/api/users/upload_image", formData, config).then((response) => {
+    axios.post("/api/users/uploadimage", formData, config).then((response) => {
+      console.log(response.data);
+
       this.setState(
         {
           uploading: false,
