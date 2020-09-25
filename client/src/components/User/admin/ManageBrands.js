@@ -9,7 +9,7 @@ import {
 } from "../../utils/Form/FormActions";
 
 import { connect } from "react-redux";
-import { getBrands } from "../../../actions/Product_actions";
+import { getBrands, addBrand } from "../../../actions/Product_actions";
 
 class ManageBrands extends Component {
   state = {
@@ -55,14 +55,32 @@ class ManageBrands extends Component {
     });
   };
 
+  resetFieldsHandler = () => {
+    const newFormData = resetFields(this.state.formData, 'brands')
+
+    this.setState({
+      formData: newFormData,
+      formSuccess: true,
+    })
+  };
+
   submitForm = (event) => {
     event.preventDefault();
     let dataToSubmit = generateData(this.state.formData, "brands");
     let formIsValid = isFormValid(this.state.formData, "brands");
+    let existingBrands = this.props.products.brands
 
     if (formIsValid) {
       // console.log(dataToSubmit);
-      
+      this.props.dispatch(addBrand(dataToSubmit, existingBrands)).then(response => {
+        if(response.payload.success){
+          this.resetFieldsHandler()
+        } else {
+          this.setState({
+            formError: true
+          })
+        }
+      })
      
     } else {
       this.setState({
