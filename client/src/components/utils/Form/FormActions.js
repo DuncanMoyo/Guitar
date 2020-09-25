@@ -7,8 +7,9 @@ export const validate = (element, formData = []) => {
     error = !valid ? [valid, message] : error;
   }
 
-  if(element.validation.confirm){
-    const valid = element.value.trim() === formData[element.validation.confirm].value
+  if (element.validation.confirm) {
+    const valid =
+      element.value.trim() === formData[element.validation.confirm].value;
     const message = `${!valid ? "Passwords do not match" : ""}`;
     error = !valid ? [valid, message] : error;
   }
@@ -46,7 +47,7 @@ export const update = (element, formData, formName) => {
 export const generateData = (formData, formName) => {
   let dataToSubmit = {};
   for (let key in formData) {
-    if(key !== 'confirmPassword') {
+    if (key !== "confirmPassword") {
       dataToSubmit[key] = formData[key].value;
     }
   }
@@ -61,28 +62,32 @@ export const isFormValid = (formData, formName) => {
   return formIsValid;
 };
 
-export const populateOptionFields = (formData, arrayData =[], field) => {
-  const newArray = []
-  const newFormData = {...formData}
+export const populateOptionFields = (formData, arrayData = [], field) => {
+  const newArray = [];
+  const newFormData = { ...formData };
 
-  arrayData.forEach(item => {
-    newArray.push({key:item._id, value: item.name})
-  })
+  arrayData.forEach((item) => {
+    newArray.push({ key: item._id, value: item.name });
+  });
 
-  newFormData[field].config.options = newArray
+  newFormData[field].config.options = newArray;
 
-  return newFormData
-}
+  return newFormData;
+};
 
 export const resetFields = (formData, formName) => {
-  const newFormData = {...formData}
+  const newFormData = { ...formData };
 
   for (let key in newFormData) {
-    newFormData[key].value = ''
-    newFormData[key].valid = false
-    newFormData[key].touched = false
-    newFormData[key].validationMessage = ''
+    if (key === "images") {
+      newFormData[key].value = [];
+    } else {
+      newFormData[key].value = "";
+    }
+    newFormData[key].valid = false;
+    newFormData[key].touched = false;
+    newFormData[key].validationMessage = "";
   }
 
-  return newFormData
-}
+  return newFormData;
+};
