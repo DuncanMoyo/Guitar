@@ -7,7 +7,9 @@ import {
   ADD_PRODUCT,
   CLEAR_PRODUCT,
   ADD_BRAND,
-  ADD_WOOD
+  ADD_WOOD,
+  GET_PRODUCT_DETAIL,
+  CLEAR_PRODUCT_DETAIL
 } from "../actions/Types";
 
 export default (state = {}, action) => {
@@ -42,6 +44,10 @@ export default (state = {}, action) => {
         addWood: action.payload.success,
         woods: action.payload.woods,
       };
+    case GET_PRODUCT_DETAIL:
+      return {...state, productDetail: action.payload}
+    case CLEAR_PRODUCT_DETAIL: 
+      return {...state, productDetail: action.payload}
     default:
       return state;
   }
