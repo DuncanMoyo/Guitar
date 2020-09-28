@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ImageNotAvailable from "../../images/image_not_available.png";
+import ImageLightBox from "../utils/ImageLightBox";
 
 class ProductImage extends Component {
   state = {
@@ -30,7 +31,20 @@ class ProductImage extends Component {
     }
   };
 
-  handleLightBox = () => {};
+  handleLightBox = (position) => {
+    if(this.state.lightboxImages.length > 0){
+      this.setState({
+        lightbox: true,
+        imagePosition: position
+      })
+    }
+  };
+
+  handleLightBoxClose = () => {
+    this.setState({
+      lightbox: false
+    })
+  }
 
   showThumbs = () =>
     this.state.lightboxImages.map((item, i) => (
@@ -64,6 +78,17 @@ class ProductImage extends Component {
           ></div>
         </div>
         <div className="main_thumbs">{this.showThumbs(detail)}</div>
+        {
+          this.state.lightbox ? 
+          <ImageLightBox 
+            id={detail.id}
+            images={this.state.lightboxImages}
+            open={this.state.open}
+            position={this.state.imagePosition  }
+            onClose={() => this.handleLightBoxClose()}
+          />
+          :null
+        }
       </div>
     );
   }
