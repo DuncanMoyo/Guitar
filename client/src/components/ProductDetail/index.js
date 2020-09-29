@@ -15,7 +15,7 @@ class ProductDetail extends Component {
     const id = this.props.match.params.id
     // console.log(id);
     this.props.dispatch(getProductDetail(id)).then(response => {
-      if(this.props.products.productDetail) {
+      if(!this.props.products.productDetail) {
         // console.log('No article found');
         this.props.history.push('/')
       }

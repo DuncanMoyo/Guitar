@@ -1,16 +1,30 @@
-import {LOGIN_USER, REGISTER_USER, AUTH_USER, LOGOUT_USER} from '../actions/Types'
+import {
+  LOGIN_USER,
+  REGISTER_USER,
+  AUTH_USER,
+  LOGOUT_USER,
+  ADD_TO_CART_USER,
+} from "../actions/Types";
 
-export default (state={}, action) => {
-  switch(action.type){
+export default (state = {}, action) => {
+  switch (action.type) {
     case LOGIN_USER:
-      return {...state, loginSuccess: action.payload}
+      return { ...state, loginSuccess: action.payload };
     case REGISTER_USER:
-      return {...state, register: action.payload}
+      return { ...state, register: action.payload };
     case AUTH_USER:
-      return {...state, userData: action.payload}
+      return { ...state, userData: action.payload };
     case LOGOUT_USER:
-      return {...state}
+      return { ...state };
+    case ADD_TO_CART_USER:
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          cart: action.payload,
+        },
+      };
     default:
-      return state
+      return state;
   }
-}
+};
