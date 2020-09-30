@@ -29,29 +29,68 @@ class UserCart extends Component {
 
         this.props
           .dispatch(getCartItems(cartItems, user.userData.cart))
-          .then(() => {});
+          .then(() => {
+            if (this.props.user.cartDetails.length > 0) {
+              this.calculateTotal(this.props.user.cartDetails);
+            }
+          });
       }
     }
   }
 
-  removeFromCart = () => {
+  calculateTotal = (cartDetail) => {
+    let total = 0;
 
-  }
+    cartDetail.forEach((item) => {
+      total += parseInt(item.price, 10) * item.quantity;
+
+      this.setState({ total, showTotal: true });
+    });
+  };
+
+  removeFromCart = () => {};
+
+  showNoItemMessage = () => (
+    <div className="cart_no_items">
+      <FontAwesomeIcon icon={faFrown} />
+      <div>You Have no items</div>
+    </div>
+  );
 
   render() {
     return (
       <UserLayout>
         <div>
           <h1>My Cart</h1>
-          <div className='user_cart'>
-            <UserProductBlock 
+          <div className="user_cart">
+            <UserProductBlock
               products={this.props.user}
-              type='cart'
-              removeItem={id => this.removeFromCart(id)}
-            >
-              
-            </UserProductBlock>
+              type="cart"
+              removeItem={(id) => this.removeFromCart(id)}
+            />
+            {this.state.showTotal ? (
+              <div>
+                <div className="user_cart_sum">
+                  <div>Total Amount: R {this.state.total}.00</div>
+                </div>
+              </div>
+            ) : this.state.showSuccess ? (
+              <div className="cart_success">
+                <FontAwesomeIcon icon={faSmile} />
+                <div>THANK YOU</div>
+                <div>Your order is now complete</div>
+              </div>
+            ) : (
+              this.showNoItemMessage()
+            )}
           </div>
+          {
+            this.state.showTotal ?
+             <div className='paypal_button_container  '>
+               Paypal
+             </div>
+            :null
+          }
         </div>
       </UserLayout>
     );
