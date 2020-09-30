@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import {getCartItems} from '../../actions/User_actions'
+import { getCartItems } from "../../actions/User_actions";
 
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faFrown from "@fortawesome/fontawesome-free-solid/faFrown";
 import faSmile from "@fortawesome/fontawesome-free-solid/faSmile";
 import UserLayout from "../hoc/UserLayout";
+import UserProductBlock from "../utils/User/UserProductBlock";
 
 class UserCart extends Component {
   state = {
@@ -17,26 +18,41 @@ class UserCart extends Component {
   };
 
   componentDidMount() {
-    let cartItem = [];
+    let cartItems = [];
     let user = this.props.user;
 
     if (user.userData.cart) {
       if (user.userData.cart.length > 0) {
         user.userData.cart.forEach((item) => {
-          cartItem.push(item.id);
+          cartItems.push(item.id);
         });
 
-        this.props.dispatch(getCartItems(cartItem, user.userData.cart)).then(() => {
-          
-        })
+        this.props
+          .dispatch(getCartItems(cartItems, user.userData.cart))
+          .then(() => {});
       }
     }
+  }
+
+  removeFromCart = () => {
+
   }
 
   render() {
     return (
       <UserLayout>
-        <div>Cart</div>
+        <div>
+          <h1>My Cart</h1>
+          <div className='user_cart'>
+            <UserProductBlock 
+              products={this.props.user}
+              type='cart'
+              removeItem={id => this.removeFromCart(id)}
+            >
+              
+            </UserProductBlock>
+          </div>
+        </div>
       </UserLayout>
     );
   }
