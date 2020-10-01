@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { getCartItems } from "../../actions/User_actions";
+import { getCartItems, removeCartItem } from "../../actions/User_actions";
 
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faFrown from "@fortawesome/fontawesome-free-solid/faFrown";
@@ -48,7 +48,17 @@ class UserCart extends Component {
     });
   };
 
-  removeFromCart = () => {};
+  removeFromCart = (id) => {
+    this.props.dispatch(removeCartItem(id)).then(() => {
+      if(this.props.user.cartDetail.length <= 0){
+        this.setState({
+          showTotal: false
+        })
+      } else {
+        this.calculateTotal(this.props.user.cartDetail)
+      }
+    })
+  };
 
   showNoItemMessage = () => (
     <div className="cart_no_items">
