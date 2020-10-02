@@ -8,6 +8,9 @@ import faFrown from "@fortawesome/fontawesome-free-solid/faFrown";
 import faSmile from "@fortawesome/fontawesome-free-solid/faSmile";
 import UserLayout from "../hoc/UserLayout";
 import UserProductBlock from "../utils/User/UserProductBlock";
+import Paypal from "../utils/Paypal";
+
+// AZGZZBYSivFXv9dFR0bm2ABIqAl1nIf3VxO1dEN68piaSyCnMjx1n_AwjzasCBIUBrMu-X_4knCRMjfC
 
 class UserCart extends Component {
   state = {
@@ -50,14 +53,14 @@ class UserCart extends Component {
 
   removeFromCart = (id) => {
     this.props.dispatch(removeCartItem(id)).then(() => {
-      if(this.props.user.cartDetail.length <= 0){
+      if (this.props.user.cartDetail.length <= 0) {
         this.setState({
-          showTotal: false
-        })
+          showTotal: false,
+        });
       } else {
-        this.calculateTotal(this.props.user.cartDetail)
+        this.calculateTotal(this.props.user.cartDetail);
       }
-    })
+    });
   };
 
   showNoItemMessage = () => (
@@ -66,6 +69,18 @@ class UserCart extends Component {
       <div>You Have no items</div>
     </div>
   );
+
+  transactionError = () => {
+
+  }
+
+  transactionCancelled = () => {
+
+  }
+
+  transactionSuccess = () => {
+    
+  }
 
   render() {
     return (
@@ -94,13 +109,22 @@ class UserCart extends Component {
               this.showNoItemMessage()
             )}
           </div>
-          {
-            this.state.showTotal ?
-             <div className='paypal_button_container  '>
-               Paypal
-             </div>
-            :null
-          }
+          {this.state.showTotal ? (
+            <div className="paypal_button_container  ">
+              <Paypal 
+                toPay={this.state.total}
+                transactionError={data => {
+                  this.transactionError(data)
+                }}
+                transactionCancelled={data => {
+                  this.transactionCancelled(data)
+                }}
+                onSuccess={data => {
+                  this.transactionSuccess(data)
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       </UserLayout>
     );
