@@ -12,6 +12,7 @@ import {
   GET_PRODUCT_DETAIL,
   CLEAR_PRODUCT_DETAIL,
 } from "./Types";
+
 import { PRODUCT_SERVER } from "../components/utils/Misc";
 
 export function getProductDetail(id) {

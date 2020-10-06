@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { getCartItems, removeCartItem } from "../../actions/User_actions";
+import {
+  getCartItems,
+  removeCartItem,
+  onSuccessBuy,
+} from "../../actions/User_actions";
 
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faFrown from "@fortawesome/fontawesome-free-solid/faFrown";
@@ -29,7 +33,6 @@ class UserCart extends Component {
         user.userData.cart.forEach((item) => {
           cartItems.push(item.id);
         });
-
         this.props
           .dispatch(getCartItems(cartItems, user.userData.cart))
           .then(() => {
@@ -71,19 +74,30 @@ class UserCart extends Component {
   );
 
   transactionError = (data) => {
-    console.log('Paypal Error');
-  }
+    console.log("Paypal Error");
+  };
 
   transactionCancelled = () => {
-    console.log('Transaction Cancelled');
-  }
+    console.log("Transaction Cancelled");
+  };
 
-  transactionSuccess = () => {
-    this.setState({
-      showTotal: false,
-      showSuccess: true
-    })
-  }
+  transactionSuccess = (data) => {
+    this.props
+      .dispatch(
+        onSuccessBuy({
+          cartDetail: this.props.user.cartDetail,
+          paymentData: data,
+        })
+      )
+      .then(() => {
+        if (this.props.user.successBuy) {
+          this.setState({
+            showTotal: false,
+            showSuccess: true,
+          });
+        }
+      });
+  };
 
   render() {
     return (
@@ -99,14 +113,14 @@ class UserCart extends Component {
             {this.state.showTotal ? (
               <div>
                 <div className="user_cart_sum">
-                  <div>Total Amount: R {this.state.total}.00</div>
+                  <div>Total Amount: $ {this.state.total}.00</div>
                 </div>
               </div>
             ) : this.state.showSuccess ? (
               <div className="cart_success">
                 <FontAwesomeIcon icon={faSmile} />
                 <div>THANK YOU</div>
-                <div>Your order is now complete</div>
+                <div>YOUR ORDER IS NOW COMPLETE</div>
               </div>
             ) : (
               this.showNoItemMessage()
@@ -114,16 +128,16 @@ class UserCart extends Component {
           </div>
           {this.state.showTotal ? (
             <div className="paypal_button_container  ">
-              <Paypal 
+              <Paypal
                 toPay={this.state.total}
-                transactionError={data => {
-                  this.transactionError(data)
+                transactionError={(data) => {
+                  this.transactionError(data);
                 }}
-                transactionCancelled={data => {
-                  this.transactionCancelled(data)
+                transactionCancelled={(data) => {
+                  this.transactionCancelled(data);
                 }}
-                onSuccess={data => {
-                  this.transactionSuccess(data)
+                onSuccess={(data) => {
+                  this.transactionSuccess(data);
                 }}
               />
             </div>

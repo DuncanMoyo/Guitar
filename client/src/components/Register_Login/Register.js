@@ -52,7 +52,7 @@ class Register extends Component {
         },
         validation: {
           required: true,
-          email: true,
+           email: true,
         },
         valid: false,
         touched: false,
@@ -187,7 +187,7 @@ class Register extends Component {
                   {this.state.formError ? (
                     <div className="error_label">Please check your data</div>
                   ) : null}
-                  <button onClick={(event) => this.submitForm(event)}>
+                  <button onSubmit={(event) => this.submitForm(event)}>
                     Create an Account
                   </button>
                 </div>
