@@ -7,8 +7,13 @@ const cloudinary = require("cloudinary");
 const app = express();
 const mongoose = require("mongoose");
 const { mongo } = require("mongoose");
+<<<<<<< HEAD
 // const async = require("async")
 require("dotenv").config(); 
+=======
+require("dotenv").config();
+const async = require('async')
+>>>>>>> 499819dc45a48135e5b073dc05be6b53275906ef
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE);
@@ -359,6 +364,7 @@ app.post("/api/users/successBuy", auth, (req, res) => {
   transactionData.user = {
     id: req.user._id,
     name: req.user.name,
+<<<<<<< HEAD
     lastName: req.user.lastName,
     email: req.user.email,
   };
@@ -423,6 +429,51 @@ app.post("/api/users/update_profile", auth, (req, res) => {
     }
   );
 });
+=======
+    lastName: req.body.lastName,
+    email: req.user.email
+  }
+  transactionData.data = req.body.paymentData
+  transactionData.product = history
+
+  User.findOneAndUpdate(
+    {_id: req.user._id},
+    {$push : {history: history}, $set: {cart: []}},
+    {new: true},
+    (err, user) => {
+      if(err) return res.json({success: false, err})
+
+      const payment = new Payment(transactionData)
+      payment.save((err, doc) => {
+        if(err) return res.json({success: false, err})
+
+        let products = []
+        doc.product.forEach(item => {
+          products.push({id: item.id, quantity: item.quantity})
+        })
+
+        async.eachOfSeries(products, (item, callback) => {
+          Product.update(
+            {_id: item.id}, 
+            {$inc: {
+              'sold': item.quantity
+            }},
+            {new: false},
+            callback
+          )
+        }, (err) => {
+          if(err) return res.json({success: false, err})
+          res.status(200).json({
+            success: true,
+            cart: user.cart,
+            cartDetail: []
+          })
+        })
+      })
+    }
+  )
+})
+>>>>>>> 499819dc45a48135e5b073dc05be6b53275906ef
 
 const port = process.env.PORT || 3002;
 app.listen(port, () => {
